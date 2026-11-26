@@ -27,7 +27,7 @@ html, body {
     perspective: 2200px;
 }
 
-/* Bade screens / desktop par centered 9:16 frame */
+/* Bade screens / desktop par centered 9:16 ratio */
 @media (min-width: 600px) {
     body {
         display: flex;
@@ -176,18 +176,18 @@ html, body {
     pointer-events: none;
 }
 
-/* ================= BACK ARROW BUTTON ================= */
+/* ================= COMPACT CORNER BACK ARROW ================= */
 .back-btn {
     position: absolute;
-    top: 22px;
-    left: 20px;
+    top: 8px;
+    left: 10px;
     z-index: 50;
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: linear-gradient(145deg, #3c2214, #26140b);
-    border: 2px solid #d4af37;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 0 6px rgba(212, 175, 55, 0.3);
+    background: rgba(38, 20, 11, 0.88);
+    border: 1.5px solid #d4af37;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -200,8 +200,8 @@ html, body {
 }
 
 .back-btn svg {
-    width: 22px;
-    height: 22px;
+    width: 17px;
+    height: 17px;
     stroke: #f4e3b2;
     stroke-width: 2.5;
     fill: none;
@@ -209,40 +209,15 @@ html, body {
     stroke-linejoin: round;
 }
 
-/* ================= PAGE DOTS & TAP ZONES ================= */
+/* ================= BOTTOM INDICATOR REMOVED ================= */
 .page-dots {
-    position: absolute;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-    display: flex;
-    gap: 8px;
-    background: rgba(38, 20, 11, 0.78);
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    backdrop-filter: blur(4px);
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(244, 227, 178, 0.35);
-    transition: all 0.3s ease;
-}
-
-.dot.active {
-    background: #d4af37;
-    width: 20px;
-    border-radius: 6px;
+    display: none !important;
 }
 
 .nav-zone {
     position: absolute;
-    top: 80px;
-    bottom: 60px;
+    top: 55px;
+    bottom: 20px;
     width: 35%;
     z-index: 40;
     cursor: pointer;
