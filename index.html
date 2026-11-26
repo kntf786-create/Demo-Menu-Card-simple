@@ -4,42 +4,387 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Spice Route Bistro - Digital Menu</title>
-    <link rel="preload" as="image" href="Screenshot_2026-11-26-20-04-41-66_99c04817c0de5652397fc8b56c3b3817.jpg">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #140d09;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            font-family: 'Georgia', serif;
+        }
+
+        /* 9:16 Responsive Full-Fit Container */
+        .menu-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100dvh;
+            max-width: calc(100dvh * (9 / 16));
+            max-height: calc(100vw * (16 / 9));
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+            overflow: hidden;
+            background: #2b1a10;
+            perspective: 1800px; /* 3D Flipbook depth */
+        }
+
+        /* ================= HOME / FRONTEND VIEW ================= */
+        .home-screen {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            transition: opacity 0.4s ease, transform 0.5s ease;
+        }
+
+        .home-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.96);
+        }
+
+        .home-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        /* Invisible Hotspot Buttons matching the 4 pill buttons in your image */
+        .hotspot {
+            position: absolute;
+            left: 12%;
+            width: 76%;
+            height: 9.2%;
+            border-radius: 50px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            outline: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .hotspot:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 18px rgba(212, 175, 55, 0.45);
+        }
+
+        /* Exact vertical alignment for the 4 buttons */
+        #btn-starters    { top: 42.3%; }
+        #btn-maincourse  { top: 54.2%; }
+        #btn-desserts    { top: 66.1%; }
+        #btn-refreshment { top: 78.0%; }
+
+        /* ================= FLIPBOOK VIEWER ================= */
+        .flipbook-screen {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            background: #1c110a;
+        }
+
+        .flipbook-screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .book-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        /* Individual Flipbook Pages */
+        .page {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: left center;
+            transition: transform 0.75s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.75s ease;
+            backface-visibility: hidden;
+            background-color: #f3ead8;
+            box-shadow: inset 12px 0 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* Page Fold / Spine Shadow Effect */
+        .page::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 6%, rgba(255,255,255,0.12) 12%, rgba(0,0,0,0) 25%);
+            pointer-events: none;
+        }
+
+        /* Flipped State (Page turned to left) */
+        .page.flipped {
+            transform: rotateY(-175deg);
+            box-shadow: -15px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ================= SUITABLE BACK ARROW BUTTON ================= */
+        .back-btn {
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            z-index: 50;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #3c2214, #26140b);
+            border: 2px solid #d4af37;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 0 6px rgba(212, 175, 55, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.9);
+        }
+
+        .back-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: #f4e3b2;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Subtle Page Indicator Dots at Bottom */
+        .page-dots {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            display: flex;
+            gap: 8px;
+            background: rgba(38, 20, 11, 0.78);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(244, 227, 178, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #d4af37;
+            width: 20px;
+            border-radius: 6px;
+        }
+
+        /* Tap zones for left/right page navigation */
+        .nav-zone {
+            position: absolute;
+            top: 80px;
+            bottom: 60px;
+            width: 35%;
+            z-index: 40;
+            cursor: pointer;
+        }
+        .nav-left { left: 0; }
+        .nav-right { right: 0; }
+    </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Front Cover Screen -->
-        <div id="cover-screen" class="screen active">
-            <div class="cover-wrapper">
-                <img src="Screenshot_2026-11-26-20-04-41-66_99c04817c0de5652397fc8b56c3b3817.jpg" alt="Spice Route Menu" class="full-img" fetchpriority="high">
-                
-                <!-- Invisible Touch Hotspots jo image ke 4 buttons ke upar fit hain -->
-                <div class="hotspot-stack">
-                    <button class="hotspot-btn" aria-label="Starters" onclick="openCategory('starter')"></button>
-                    <button class="hotspot-btn" aria-label="Main Course" onclick="openCategory('mainCourse')"></button>
-                    <button class="hotspot-btn" aria-label="Desserts" onclick="openCategory('desserts')"></button>
-                    <button class="hotspot-btn" aria-label="Refreshments" onclick="openCategory('refreshments')"></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Full-Screen Flipbook Screen -->
-        <div id="flipbook-screen" class="screen">
-            <!-- Floating Minimal Header -->
-            <div class="floating-header">
-                <button class="glass-btn" onclick="goHome()">← Menu</button>
-                <span id="page-indicator" class="glass-badge">1 / 3</span>
-            </div>
-
-            <!-- Full-Screen 3D Book -->
-            <div class="book-stage" id="book-stage">
-                <div class="book" id="book"></div>
-            </div>
-        </div>
+<div class="menu-wrapper" id="app">
+    <!-- FRONTEND / MAIN MENU PAGE -->
+    <div class="home-screen" id="homeScreen">
+        <img src="Screenshot_2026-11-26-20-04-41-66_99c04817c0de5652397fc8b56c3b3817.jpg" alt="Spice Route Bistro Menu" class="home-bg">
+        
+        <!-- 4 Category Buttons Mapped Over Image -->
+        <button class="hotspot" id="btn-starters" onclick="openCategory('starters')" aria-label="Starters"></button>
+        <button class="hotspot" id="btn-maincourse" onclick="openCategory('mainCourse')" aria-label="Main Course"></button>
+        <button class="hotspot" id="btn-desserts" onclick="openCategory('desserts')" aria-label="Desserts"></button>
+        <button class="hotspot" id="btn-refreshment" onclick="openCategory('refreshments')" aria-label="Refreshments"></button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- FLIPBOOK SCREEN -->
+    <div class="flipbook-screen" id="flipbookScreen">
+        <!-- Back Arrow Button to Return to Frontend -->
+        <button class="back-btn" onclick="goHome()" aria-label="Back to Menu">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+
+        <!-- Touch/Click Zones for Quick Page Flip -->
+        <div class="nav-zone nav-left" onclick="prevPage()"></div>
+        <div class="nav-zone nav-right" onclick="nextPage()"></div>
+
+        <!-- 3D Book Pages Container -->
+        <div class="book-container" id="bookContainer"></div>
+
+        <!-- Page Indicator Dots -->
+        <div class="page-dots" id="pageDots"></div>
+    </div>
+</div>
+
+<script>
+    // Exact GitHub Image Filenames Mapped to Each Category
+    const menuData = {
+        starters: [
+            "Screenshot_2026-11-26-19-59-43-25_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-59-49-65_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-59-54-97_99c04817c0de5652397fc8b56c3b3817.jpg"
+        ],
+        mainCourse: [
+            "Screenshot_2026-11-26-19-58-48-55_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-59-06-87_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-59-16-95_99c04817c0de5652397fc8b56c3b3817.jpg"
+        ],
+        desserts: [
+            "Screenshot_2026-11-26-19-57-05-58_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-57-20-82_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-57-29-07_99c04817c0de5652397fc8b56c3b3817.jpg"
+        ],
+        refreshments: [
+            "Screenshot_2026-11-26-19-57-48-01_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-58-11-95_99c04817c0de5652397fc8b56c3b3817.jpg",
+            "Screenshot_2026-11-26-19-58-27-36_99c04817c0de5652397fc8b56c3b3817.jpg"
+        ]
+    };
+
+    let currentImages = [];
+    let currentPageIndex = 0;
+
+    const homeScreen = document.getElementById('homeScreen');
+    const flipbookScreen = document.getElementById('flipbookScreen');
+    const bookContainer = document.getElementById('bookContainer');
+    const pageDots = document.getElementById('pageDots');
+
+    function openCategory(categoryKey) {
+        currentImages = menuData[categoryKey];
+        currentPageIndex = 0;
+        renderBook();
+
+        homeScreen.classList.add('hidden');
+        flipbookScreen.classList.add('active');
+    }
+
+    function goHome() {
+        flipbookScreen.classList.remove('active');
+        homeScreen.classList.remove('hidden');
+    }
+
+    function renderBook() {
+        bookContainer.innerHTML = '';
+        pageDots.innerHTML = '';
+
+        currentImages.forEach((imgSrc, index) => {
+            // Create Page Element
+            const page = document.createElement('div');
+            page.className = 'page';
+            page.style.zIndex = currentImages.length - index;
+            page.id = `page-${index}`;
+
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = `Menu Page ${index + 1}`;
+            page.appendChild(img);
+            bookContainer.appendChild(page);
+
+            // Create Indicator Dot
+            const dot = document.createElement('div');
+            dot.className = index === 0 ? 'dot active' : 'dot';
+            dot.id = `dot-${index}`;
+            pageDots.appendChild(dot);
+        });
+    }
+
+    function updateBookState() {
+        currentImages.forEach((_, index) => {
+            const page = document.getElementById(`page-${index}`);
+            const dot = document.getElementById(`dot-${index}`);
+
+            if (index < currentPageIndex) {
+                page.classList.add('flipped');
+                page.style.zIndex = index + 1;
+            } else {
+                page.classList.remove('flipped');
+                page.style.zIndex = currentImages.length - index;
+            }
+
+            dot.className = index === currentPageIndex ? 'dot active' : 'dot';
+        });
+    }
+
+    function nextPage() {
+        if (currentPageIndex < currentImages.length - 1) {
+            currentPageIndex++;
+            updateBookState();
+        }
+    }
+
+    function prevPage() {
+        if (currentPageIndex > 0) {
+            currentPageIndex--;
+            updateBookState();
+        }
+    }
+
+    // Touch Swipe Gesture Support for Realistic Mobile Flipping
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    flipbookScreen.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    flipbookScreen.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const swipeThreshold = 40;
+        if (touchStartX - touchEndX > swipeThreshold) {
+            // Swiped Left -> Turn to Next Page
+            nextPage();
+        } else if (touchEndX - touchStartX > swipeThreshold) {
+            // Swiped Right -> Flip Back to Previous Page
+            prevPage();
+        }
+    }
+</script>
+
 </body>
 </html>
