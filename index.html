@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interactive Flipbook Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Front Cover Screen -->
+        <div id="cover-screen" class="screen active">
+            <div class="cover-wrapper">
+                <img src="Screenshot_2026-11-26-20-04-41-66_99c04817c0de5652397fc8b56c3b3817.jpg" alt="Menu Cover" class="cover-img">
+                
+                <!-- 4 Category Buttons Overlay -->
+                <div class="category-overlay">
+                    <button class="cat-btn" onclick="openCategory('starter')">Starter</button>
+                    <button class="cat-btn" onclick="openCategory('mainCourse')">Main Course</button>
+                    <button class="cat-btn" onclick="openCategory('desserts')">Desserts</button>
+                    <button class="cat-btn" onclick="openCategory('refreshments')">Refreshments</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flipbook Viewer Screen -->
+        <div id="flipbook-screen" class="screen">
+            <div class="top-bar">
+                <button class="back-btn" onclick="goHome()">← Menu</button>
+                <span id="category-title">Starter</span>
+                <span id="page-indicator">1 / 3</span>
+            </div>
+
+            <div class="book-stage" id="book-stage">
+                <div class="book" id="book">
+                    <!-- Pages dynamically yahan load honge -->
+                </div>
+            </div>
+
+            <div class="controls-bar">
+                <button id="prev-btn" class="nav-btn" onclick="prevPage()">◀ Prev</button>
+                <span class="hint-text">Tap or Swipe to Flip</span>
+                <button id="next-btn" class="nav-btn" onclick="nextPage()">Next ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
