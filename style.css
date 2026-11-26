@@ -7,24 +7,22 @@
 }
 
 body {
-    background-color: #0d0d0d;
-    color: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #000;
     height: 100dvh;
     width: 100vw;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .app-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 480px;
     height: 100dvh;
     position: relative;
-    background: #141414;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+    background: #000;
     overflow: hidden;
 }
 
@@ -32,109 +30,95 @@ body {
     position: absolute;
     inset: 0;
     display: none;
-    flex-direction: column;
     opacity: 0;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.2s ease;
 }
 
 .screen.active {
-    display: flex;
+    display: block;
     opacity: 1;
 }
 
-/* Front Cover Styling */
+/* Front Cover & Exact Button Alignment */
 .cover-wrapper {
     position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.cover-img {
+.full-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
+    display: block;
 }
 
-.category-overlay {
+/* Cover image ke 4 buttons ke exact coordinates */
+.hotspot-stack {
     position: absolute;
-    bottom: 8%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 85%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    top: 47.5%;
+    left: 11%;
+    width: 78%;
+    height: 43.5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     z-index: 10;
 }
 
-.cat-btn {
-    background: rgba(15, 15, 15, 0.85);
-    backdrop-filter: blur(8px);
-    color: #f5d076;
-    border: 1px solid rgba(245, 208, 118, 0.5);
-    padding: 14px 10px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+.hotspot-btn {
+    width: 100%;
+    height: 21%;
+    background: transparent;
+    border: none;
+    border-radius: 50px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-    transition: transform 0.15s ease, background 0.2s ease;
 }
 
-.cat-btn:active {
-    transform: scale(0.95);
-    background: #f5d076;
-    color: #0d0d0d;
+.hotspot-btn:active {
+    background: rgba(255, 215, 130, 0.18);
 }
 
-/* Flipbook Viewer Styling */
-.top-bar {
-    height: 54px;
-    padding: 0 16px;
+/* Floating Header Over Full-Screen Page */
+.floating-header {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #111;
-    border-bottom: 1px solid #262626;
-    z-index: 20;
+    z-index: 50;
+    pointer-events: none;
 }
 
-.back-btn {
-    background: #222;
-    color: #f5d076;
-    border: 1px solid #3a3a3a;
-    padding: 6px 12px;
-    border-radius: 6px;
+.glass-btn, .glass-badge {
+    pointer-events: auto;
+    background: rgba(20, 15, 12, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #f5d896;
+    border: 1px solid rgba(245, 216, 150, 0.4);
+    padding: 6px 14px;
+    border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.glass-btn {
     cursor: pointer;
 }
 
-#category-title {
-    font-weight: 600;
-    font-size: 15px;
-    color: #f5d076;
-    letter-spacing: 0.5px;
+.glass-btn:active {
+    transform: scale(0.95);
 }
 
-#page-indicator {
-    font-size: 13px;
-    color: #aaa;
-}
-
-/* 3D Flipbook Stage */
+/* 100% Full-Screen Flipbook Stage */
 .book-stage {
-    flex: 1;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    perspective: 1800px;
-    padding: 12px;
+    height: 100%;
+    perspective: 2000px;
     overflow: hidden;
 }
 
@@ -142,7 +126,6 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    max-height: 780px;
     transform-style: preserve-3d;
 }
 
@@ -152,73 +135,35 @@ body {
     width: 100%;
     height: 100%;
     transform-origin: left center;
-    transition: transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
     transform-style: preserve-3d;
-    border-radius: 6px 14px 14px 6px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
     will-change: transform;
-    background: #1a1a1a;
+    background: #1a1410;
 }
 
 .page img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 6px 14px 14px 6px;
+    object-fit: fill;
     display: block;
     backface-visibility: hidden;
 }
 
-/* Realistic Page Fold Lighting */
+/* Realistic Page Shadow */
 .page::after {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 6px 14px 14px 6px;
-    background: linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.06) 8%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.2) 100%);
+    background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0.05) 6%, rgba(0,0,0,0) 20%, rgba(0,0,0,0.15) 100%);
     pointer-events: none;
-    transition: opacity 0.65s ease;
+    transition: opacity 0.6s ease;
 }
 
 .page.flipped {
-    transform: rotateY(-165deg);
+    transform: rotateY(-170deg);
     pointer-events: none;
 }
 
 .page.flipped::after {
-    opacity: 0.85;
-}
-
-/* Bottom Controls */
-.controls-bar {
-    height: 58px;
-    padding: 0 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #111;
-    border-top: 1px solid #262626;
-    z-index: 20;
-}
-
-.nav-btn {
-    background: #222;
-    color: #fff;
-    border: 1px solid #3a3a3a;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.hint-text {
-    font-size: 12px;
-    color: #888;
+    opacity: 0.9;
 }
