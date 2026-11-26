@@ -37,13 +37,13 @@ body {
     width: 100%;
     height: 100%;
     z-index: 10;
-    transition: opacity 0.4s ease, transform 0.5s ease;
+    transition: opacity 0.35s ease, transform 0.45s ease;
 }
 
 .home-screen.hidden {
     opacity: 0;
     pointer-events: none;
-    transform: scale(0.96);
+    transform: scale(0.97);
 }
 
 .home-bg {
@@ -86,7 +86,7 @@ body {
     z-index: 20;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.35s ease;
     background: #1c110a;
 }
 
@@ -102,16 +102,17 @@ body {
     transform-style: preserve-3d;
 }
 
+/* Fixed: Solid paper sheet without disappearing backface */
 .page {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     transform-origin: left center;
-    transition: transform 0.75s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.75s ease;
-    backface-visibility: hidden;
-    background-color: #f3ead8;
-    box-shadow: inset 12px 0 25px rgba(0, 0, 0, 0.25);
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1), box-shadow 0.7s ease;
+    background-color: #efe4ce;
+    box-shadow: inset 12px 0 24px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 .page img {
@@ -122,17 +123,26 @@ body {
     pointer-events: none;
 }
 
+/* Spine crease & lighting gradient */
 .page::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 6%, rgba(255,255,255,0.12) 12%, rgba(0,0,0,0) 25%);
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.38) 0%,
+        rgba(0, 0, 0, 0.08) 5%,
+        rgba(255, 255, 255, 0.14) 11%,
+        rgba(0, 0, 0, 0) 24%
+    );
     pointer-events: none;
 }
 
+/* Flipped page slides off cleanly to the left with realistic tilt */
 .page.flipped {
-    transform: rotateY(-175deg);
-    box-shadow: -15px 0 30px rgba(0, 0, 0, 0.5);
+    transform: translateX(-100%) rotateY(-28deg);
+    opacity: 0;
+    box-shadow: -12px 0 24px rgba(0, 0, 0, 0.45);
 }
 
 /* ================= BACK ARROW BUTTON ================= */
