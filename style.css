@@ -9,27 +9,35 @@
 html, body {
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
     background-color: #140d09;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
     font-family: 'Georgia', serif;
 }
 
-/* Mobile par 100% Full Screen Fit */
+/* Mobile par poori screen edge-to-edge fit */
 .menu-wrapper {
-    position: relative;
-    width: 100vw;
-    height: 100dvh;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: #2b1a10;
     perspective: 2200px;
 }
 
-/* Desktop / Tablet par exact 9:16 ratio */
-@media (min-width: 540px) {
+/* Bade screens / desktop par centered 9:16 frame */
+@media (min-width: 600px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .menu-wrapper {
+        position: relative;
+        inset: auto;
         width: calc(100dvh * 9 / 16);
         height: 100dvh;
         max-width: 100vw;
@@ -56,7 +64,7 @@ html, body {
 .home-bg {
     width: 100%;
     height: 100%;
-    object-fit: fill;
+    object-fit: cover;
     display: block;
 }
 
@@ -110,7 +118,6 @@ html, body {
     transform-style: preserve-3d;
 }
 
-/* Real 3D Book Leaf */
 .page {
     position: absolute;
     inset: 0;
@@ -124,20 +131,18 @@ html, body {
     will-change: transform;
 }
 
-/* Front of the page */
 .page img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: fill;
+    object-fit: cover;
     display: block;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     pointer-events: none;
 }
 
-/* Back side of the paper visible while flipping */
 .page::before {
     content: '';
     position: absolute;
@@ -149,7 +154,6 @@ html, body {
     box-shadow: inset -15px 0 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Book Spine & Page Fold Shadow */
 .page::after {
     content: '';
     position: absolute;
@@ -166,7 +170,6 @@ html, body {
     transition: opacity 0.6s ease;
 }
 
-/* Page Flipped 180deg like a real book */
 .page.flipped {
     transform: rotateY(-180deg);
     box-shadow: -15px 0 35px rgba(0, 0, 0, 0.6);
