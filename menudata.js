@@ -23,6 +23,7 @@ const menuData = {
 
 let currentImages = [];
 let currentPageIndex = 0;
+let isFlipping = false;
 
 const homeScreen = document.getElementById('homeScreen');
 const flipbookScreen = document.getElementById('flipbookScreen');
@@ -30,8 +31,9 @@ const bookContainer = document.getElementById('bookContainer');
 const pageDots = document.getElementById('pageDots');
 
 function openCategory(categoryKey) {
-    currentImages = menuData[categoryKey];
+    currentImages = menuData[categoryKey] || [];
     currentPageIndex = 0;
+    isFlipping = false;
     renderBook();
 
     homeScreen.classList.add('hidden');
@@ -41,6 +43,7 @@ function openCategory(categoryKey) {
 function goHome() {
     flipbookScreen.classList.remove('active');
     homeScreen.classList.remove('hidden');
+    isFlipping = false;
 }
 
 function renderBook() {
@@ -67,6 +70,8 @@ function renderBook() {
 }
 
 function updateBookState() {
+    isFlipping = true;
+
     currentImages.forEach((_, index) => {
         const page = document.getElementById(`page-${index}`);
         const dot = document.getElementById(`dot-${index}`);
@@ -81,9 +86,14 @@ function updateBookState() {
 
         dot.className = index === currentPageIndex ? 'dot active' : 'dot';
     });
+
+    setTimeout(() => {
+        isFlipping = false;
+    }, 650);
 }
 
 function nextPage() {
+    if (isFlipping) return;
     if (currentPageIndex < currentImages.length - 1) {
         currentPageIndex++;
         updateBookState();
@@ -91,6 +101,7 @@ function nextPage() {
 }
 
 function prevPage() {
+    if (isFlipping) return;
     if (currentPageIndex > 0) {
         currentPageIndex--;
         updateBookState();
